@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/back/geolocator_helper.dart';
 
 void main() {
   runApp(WeatherApp());
@@ -27,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Position currentLocation;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[],
+          children: <Widget>[
+            ElevatedButton(
+                onPressed: () async {
+                  currentLocation = await getCurrentLocation();
+                  print(currentLocation);
+                },
+                child: Text('getCurrentLocation'))
+          ],
         ),
       ),
     );
