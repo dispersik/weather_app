@@ -48,14 +48,16 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ElevatedButton(
                 onPressed: () async {
-                  currentLocation = await getCurrentLocation();
+                  currentLocation = /*await getCurrentLocation() ??*/
+                      Position(
+                          // latitude: 52.42536875588388,
+                          // longitude: 31.021136747104755
+                          latitude: 52.35308471250674,
+                          longitude: 31.106725359980484);
                   print(currentLocation);
-                  detailedAddress = await getAddressFromCoordinates(
-                      currentLocation.latitude, currentLocation.longitude);
-                  // detailedAddress.forEach((element)=>print(element.toMap()));
-                  currentWeather = await getCurrentWeather(
-                          addressToLocation(detailedAddress[0]), apiKey)
-                      .then((value) => value.body);
+                  currentWeather =
+                      await getCurrentWeatherByCoordinates(currentLocation)
+                          .then((value) => value.body);
                   print(currentWeather);
                 },
                 child: Text('getCurrentLocation'))
