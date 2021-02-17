@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final weatherAPI = OpenWeatherMapAPI();
   Position currentLocation;
   List<Address> detailedAddress;
   List<Weather> weatherList;
@@ -54,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           latitude: 52.35308471250674,
                           longitude: 31.106725359980484);
                   print(currentLocation);
-                  weatherList = await apiResponseToWeatherList(
-                      await getCurrentForecastByCoordinates(currentLocation));
+                  weatherList = await weatherAPI.getForecastByCoordinates(currentLocation);
+                  print(weatherList);
                 },
                 child: Text('getCurrentLocation'))
           ],
