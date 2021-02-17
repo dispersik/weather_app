@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/back/geocoder_helper.dart';
-import 'package:weather_app/back/geolocator_helper.dart';
 import 'package:weather_app/back/openweathermap_api.dart';
 
 void main() {
@@ -56,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           longitude: 31.106725359980484);
                   print(currentLocation);
                   currentWeather =
-                      await getCurrentWeatherByCoordinates(currentLocation)
+                      await getCurrentForecastByCoordinates(currentLocation)
                           .then((value) => value.body);
                   print(currentWeather);
                 },
