@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/back/geocoder_helper.dart';
 import 'package:weather_app/back/geolocator_helper.dart';
+import 'package:weather_app/back/openweathermap_api.dart';
 
 void main() {
   runApp(WeatherApp());
@@ -30,6 +33,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Position currentLocation;
+  List<Address> detailedAddress;
+  String currentWeather;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +50,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () async {
                   currentLocation = await getCurrentLocation();
                   print(currentLocation);
+                  detailedAddress = await getAddressFromCoordinates(
+                      currentLocation.latitude, currentLocation.longitude);
+                  // detailedAddress.forEach((element)=>print(element.toMap()));
+                  currentWeather = await getCurrentWeather(
+                          addressToLocation(detailedAddress[0]), apiKey)
+                      .then((value) => value.body);
+                  print(currentWeather);
                 },
                 child: Text('getCurrentLocation'))
           ],
