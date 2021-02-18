@@ -8,16 +8,17 @@ class WeatherWidget extends StatelessWidget {
   Future<void> _getForecastRoutine() async {
     final weatherAPI = OpenWeatherMapAPI();
     final currentLocation = /*await getCurrentLocation() ??*/
-    Position(
-      // latitude: 52.42536875588388,
-      // longitude: 31.021136747104755
-      latitude: 52.35308471250674,
-      longitude: 31.106725359980484
-    );
+        Position(
+            // latitude: 52.42536875588388,
+            // longitude: 31.021136747104755
+            latitude: 52.35308471250674,
+            longitude: 31.106725359980484);
     print(currentLocation);
-    final weatherList = await weatherAPI.getForecastByCoordinates(currentLocation);
+    final weatherList =
+        await weatherAPI.getForecastByCoordinates(currentLocation);
     print(weatherList);
   }
+
   const WeatherWidget({this.weather});
 
   final Weather weather;
@@ -37,7 +38,8 @@ class WeatherWidget extends StatelessWidget {
               children: [
                 Image.asset(
                   'assets/openweathermap_icons/' +
-                      weather.weatherDescription.iconName+'.png',
+                      weather.weatherDescription.iconName +
+                      '.png',
                   scale: 0.4,
                   isAntiAlias: true,
                 ),
@@ -52,13 +54,25 @@ class WeatherWidget extends StatelessWidget {
                       color: Colors.lightBlueAccent,
                       fontWeight: FontWeight.w300),
                 ),
-                Text('${weather.weatherDescription.description}'),
-                Text('Pressure: ${weather.pressure.round()} kPa'),
-                Text('Humidity:  ${weather.humidity.round()}%'),
-                ElevatedButton(
-                    onPressed: () async => _getForecastRoutine(),
-                    child: null
-                )
+                Text(
+                  '${weather.weatherDescription.description}',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w300),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Pressure\n${weather.pressure.round()} kPa',
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(width: 20),
+                    Text('Humidity\n${weather.humidity.round()}%',
+                        textAlign: TextAlign.center),
+                  ],
+                ),
               ],
             ),
           ),
