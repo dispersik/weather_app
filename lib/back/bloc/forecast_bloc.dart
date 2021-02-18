@@ -12,7 +12,7 @@ import '../weather.dart';
 enum ForecastEvent { getNewForecast, validateExpireState, getCurrentForecast }
 
 class ForecastBloc extends Bloc<ForecastEvent, Forecast> {
-  ForecastBloc(Forecast initialState) : super(initialState);
+  ForecastBloc() : super(null);
   final OpenWeatherMapAPI _api = OpenWeatherMapAPI();
 
   @override
@@ -31,9 +31,13 @@ class ForecastBloc extends Bloc<ForecastEvent, Forecast> {
         } catch (e) {
           print('error in bloc: $e');
           position = Position(
-              latitude:35.34740561167222, longitude: 139.40772737368098);
+              latitude: 35.34740561167222, longitude: 139.40772737368098);
         }
-        forecast = await _api.getForecastByCoordinates(position);
+        try {
+          forecast = await _api.getForecastByCoordinates(position);
+        } catch (e) {
+          print('error in bloc: $e');
+        }
         yield Forecast(forecast);
         break;
       default:

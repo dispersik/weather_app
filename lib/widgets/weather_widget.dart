@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/back/helper.dart';
 import 'package:weather_app/back/openweathermap_api.dart';
 import 'package:weather_app/back/weather.dart';
 
@@ -26,14 +27,10 @@ class WeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.center,
-      // crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Container(
-            // height: 500,
-            // color: Colors.grey,
             child: Column(
               children: [
                 Image.asset(
@@ -44,7 +41,7 @@ class WeatherWidget extends StatelessWidget {
                   isAntiAlias: true,
                 ),
                 Text(
-                  weather.city,
+                  "${weather.city}\n${_dateHelper(weather.datetime)}, ${_timeHelper(weather.datetime)}",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
                 ),
                 Text(
@@ -79,5 +76,18 @@ class WeatherWidget extends StatelessWidget {
         ),
       ],
     );
+  }
+  String _dateHelper(DateTime time) {
+    if (DateTime.now().day==time.day) return 'Today';
+    else return weekdayToReadableDay(time.weekday);
+  }
+  String _timeHelper(DateTime time) {
+    var now = DateTime.now();
+    if (now.isAfter(time)&&_dateHelper(time)=='Today') {
+      var result = '${now.hour}:';
+      if (now.minute<10) return result+'0${now.minute}';
+      else return result+now.minute.toString();
+    }
+    else return '${time.hour}:00';
   }
 }

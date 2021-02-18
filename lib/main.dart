@@ -25,8 +25,7 @@ Future<void> _getForecastRoutine() async {
   forecast = weatherList;
 }
 
-Future<void> main() async {
-  await _getForecastRoutine();
+void main() {
   Bloc.observer = SimpleBlocObserver();
   runApp(App());
 }
@@ -41,13 +40,14 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ForecastBloc(Forecast(forecast))),
-        BlocProvider(create: (context) => WeatherBloc(forecast[0])),
+        BlocProvider(create: (context) => ForecastBloc()),
+        BlocProvider(create: (context) => WeatherBloc()),
       ],
       child: BlocListener<ForecastBloc, Forecast>(
         listener: (context, state) {
           print('forecast new state: ${state.forecast[0]}');
-          context.read<WeatherBloc>().add(WeatherEvent.update);
+          // TODO match timestamp after updating
+          context.read<WeatherBloc>().add(WeatherEvent.setCurrentWeather);
         },
         child: MaterialApp(home: WeatherPage()),
       ),

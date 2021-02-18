@@ -1,46 +1,58 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/back/bloc/forecast_bloc.dart';
+import 'package:weather_app/back/bloc/weather_bloc.dart';
+import 'package:weather_app/back/forecast.dart';
+import 'package:weather_app/back/helper.dart';
+import 'package:weather_app/pages/weather_page.dart';
 
 import '../main.dart';
 
 class ForecastPage extends StatelessWidget {
-  String _weekdayToReadableDay(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Monday';
-      case 2:
-        return 'Thuesday';
-      case 3:
-        return 'Wednesday';
-      case 4:
-        return 'Thursday';
-      case 5:
-        return 'Friday';
-      case 6:
-        return 'Saturday';
-      case 7:
-        return 'Sunday';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    int _bias = 1;
-    var itemsList = List<ListTile>();
-    Widget _buildTiles(BuildContext context, int index) {
-      return itemsList[index];
-    }
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          title: Center(
+            child: Text('Forecast for ${forecast[0].city}',
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.w300)),
+          ),
+        ),
+        body: BlocBuilder<ForecastBloc, Forecast>(
+            builder: (context, _forecast) => Column(
+                  children: [
+                    Container(
+                      height: 0.5,
+                      color: Colors.black,
+                    ),
+                    Expanded(
+                      child: ListView.separated(
+                          itemCount: _forecast.forecast.length + 5,
+                          separatorBuilder: (context, index) => Divider(
+                                color: Colors.black,
+                              ),
+                          itemBuilder: (context, index) =>
+                              _buildTiles(context, index, _forecast)),
+                    ),
+                  ],
+                )));
+  }
 
+  Widget _buildTiles(BuildContext context, int index, Forecast forecast) {
+    var itemsList = List<ListTile>();
+    var _forecast = forecast.forecast;
     itemsList.add(ListTile(
       title: Text('Today',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300)),
     ));
-    forecast.forEach((element) {
+    _forecast.forEach((element) {
       itemsList.add(ListTile(
         shape: Border(
           top: BorderSide(width: double.infinity, color: Colors.black),
-          // bottom: BorderSide(width: double.infinity, color: Colors.black)
         ),
         leading: Image.asset(
           'assets/openweathermap_icons/' +
@@ -58,54 +70,22 @@ class ForecastPage extends StatelessWidget {
               color: Colors.lightBlueAccent,
               fontWeight: FontWeight.w300),
         ),
+        onTap: () {
+          context.read<WeatherBloc>()
+            ..index(_forecast.indexOf(element))
+            ..add(WeatherEvent.setByIndex);
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => WeatherPage()));
+        },
       ));
       if (element.datetime.hour == 21)
         itemsList.add(ListTile(
             title: Text(
-              _weekdayToReadableDay(element.datetime.weekday),
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
-            )));
+          weekdayToReadableDay(
+              element.datetime.weekday == 7 ? 1 : element.datetime.weekday + 1),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+        )));
     });
-
-    return Scaffold(
-        backgroundColor: Colors.grey[300],
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          title: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 25.0),
-              child: Text('Forecast for ${forecast[0].city}',
-                  style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.w300)),
-            ),
-          ),
-        ),
-        body:
-        /* BlocBuilder<ForecastBloc, List<Weather>>(
-        cubit: App.forecastBloc,
-        builder: (_, _forecast) {
-          var itemsList;
-          forecast.forEach((element) => itemsList.add(ListTile(
-                title: Text('${element.datetime.hour}:00'),
-              )));
-          return */
-        Column(
-          children: [
-            Container(height: 0.5, color: Colors.black,),
-            Expanded(
-              child: ListView.separated(
-                  itemCount: forecast.length + 5,
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.black,
-                  ),
-                  itemBuilder: _buildTiles),
-            ),
-          ],
-        )
-      /*;
-        },
-      ),*/
-    );
+    return itemsList[index];
   }
 }
