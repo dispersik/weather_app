@@ -5,9 +5,16 @@ abstract class WeatherAPI {
 }
 
 class Weather {
+  Weather(
+      {this.humidity,
+      this.temp,
+      this.pressure,
+      this.weatherDescription,
+      this.datetime});
+
   Weather.fromMap(Map<String, dynamic> map) {
     datetime = DateTime.parse(map['dt_txt'].toString());
-    temp =_doubleParser(map['main']['temp']);
+    temp = _doubleParser(map['main']['temp']);
     pressure = _doubleParser(map['main']['pressure']);
     humidity = _doubleParser(map['main']['humidity']);
     weatherDescription = WeatherDescription.fromMap(map['weather'][0]);
@@ -19,6 +26,7 @@ class Weather {
   double humidity;
   WeatherDescription weatherDescription;
 
+  int get temperature => (temp-273).round();
   @override
   String toString() =>
       'Weather: ' +
@@ -43,4 +51,4 @@ class WeatherDescription {
       'Weather description: main: $main, description: $description, icon: $iconName';
 }
 
-double _doubleParser(dynamic value)=>double.tryParse(value.toString());
+double _doubleParser(dynamic value) => double.tryParse(value.toString());

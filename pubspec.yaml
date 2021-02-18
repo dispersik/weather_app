@@ -26,6 +26,7 @@ dependencies:
   geolocator: ^6.2.0
   geocoder: ^0.2.1
   http: ^0.12.2
+  flutter_bloc: ^6.1.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,7 +42,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
+  assets:
+    - assets/openweathermap_icons/
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
