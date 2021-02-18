@@ -1,18 +1,24 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/back/bloc/forecast_bloc.dart';
+import 'package:weather_app/main.dart';
 
 import '../weather.dart';
 
-enum WeatherViewEvent {
+enum WeatherEvent {
   init,
-  change,
+  update,
 }
 
-class WeatherBloc extends Bloc<WeatherViewEvent, Weather> {
+class WeatherBloc extends Bloc<WeatherEvent, Weather> {
   WeatherBloc(Weather initialState) : super(initialState);
 
   @override
-  Stream<Weather> mapEventToState(WeatherViewEvent event) async* {
-    // TODO: implement mapEventToState
-    throw UnimplementedError();
+  Stream<Weather> mapEventToState(WeatherEvent event) async* {
+    switch(event) {
+      case WeatherEvent.update:
+        yield forecast[0];
+        break;
+    }
+    // throw UnimplementedError();
   }
 }

@@ -5,7 +5,7 @@ Future<Position> getCurrentLocation() async {
     _checkAccessability();
   } catch (e) {
     print(e);
-    throw Exception('Failed to get permissions');
+    return Future.error('Failed to get permissions');
   }
   var result;
   try {
@@ -14,7 +14,7 @@ Future<Position> getCurrentLocation() async {
         timeLimit: Duration(seconds: 10), forceAndroidLocationManager: true);
   } catch (e) {
     print(e);
-    throw Exception('Failed to get current location');
+    return Future.error('Failed to get current location');
   }
   return result;
 }

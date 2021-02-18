@@ -32,44 +32,25 @@ Future<void> main() async {
 }
 
 class App extends StatefulWidget {
-  // ignore: close_sinks
-  final forecastBloc = ForecastBloc(Forecast(forecast));
-
-  // ignore: close_sinks
-  final weatherBloc = WeatherBloc(forecast[1]);
-
   @override
   State<StatefulWidget> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
   @override
-  void initState() {
-    super.initState();
-    // widget.forecastBloc.add(ForecastEvent.getNewForecast);
-    // widget.weatherBloc.add(WeatherViewEvent.init);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (_) => ForecastBloc(Forecast(forecast)),
-        child: BlocBuilder<ForecastBloc, Forecast>(
-          builder: (_, _forecast) => MaterialApp(
-            home: BlocProvider(
-              create: (_) => WeatherBloc(_forecast.forecast[0]),
-              child: BlocBuilder<WeatherBloc, Weather>(
-                builder: (_, weather) => WeatherPage(weather),
-              ),
-            ),
-          ),
-        ));
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.forecastBloc.close();
-    widget.weatherBloc.close();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ForecastBloc(Forecast(forecast))),
+        BlocProvider(create: (context) => WeatherBloc(forecast[0])),
+      ],
+      child: BlocListener<ForecastBloc, Forecast>(
+        listener: (context, state) {
+          print('forecast new state: ${state.forecast[0]}');
+          context.read<WeatherBloc>().add(WeatherEvent.update);
+        },
+        child: MaterialApp(home: WeatherPage()),
+      ),
+    );
   }
 }
