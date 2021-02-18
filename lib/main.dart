@@ -103,47 +103,120 @@ List<Weather> forecast = List<Weather>();
 Future<List<Weather>> _getForecastRoutine() async {
   final weatherAPI = OpenWeatherMapAPI();
   final currentLocation = /*await getCurrentLocation() ??*/
-  Position(
-    // latitude: 52.42536875588388,
-    // longitude: 31.021136747104755
-      latitude: 52.35308471250674,
-      longitude: 31.106725359980484);
+      Position(
+          // latitude: 52.42536875588388,
+          // longitude: 31.021136747104755
+          latitude: 52.35308471250674,
+          longitude: 31.106725359980484);
   print(currentLocation);
-  final weatherList = await weatherAPI.getForecastByCoordinates(currentLocation);
+  final weatherList =
+      await weatherAPI.getForecastByCoordinates(currentLocation);
   print(weatherList);
   return weatherList;
 }
 
 Future<void> main() async {
-  forecast =  await _getForecastRoutine();
+  forecast = await _getForecastRoutine();
   Bloc.observer = SimpleBlocObserver();
   runApp(App());
 }
 
 class App extends StatelessWidget {
   final Weather _weather = forecast[0];
+  final forecastBloc = ForecastBloc(forecast);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: BlocProvider(
-        create: (_) => WeatherBloc(_weather),
-        child: WeatherPage(),
+        create: (_) => ForecastBloc(forecast),
+        child: BlocProvider(
+          create: (_) => WeatherBloc(_weather),
+          child: WeatherPage(),
+        ),
       ),
     );
+  }
+
+  void dispose() {
+    forecastBloc.close();
   }
 }
 
 class ForecastPage extends StatelessWidget {
+  String _weekdayToReadableDay(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Monday';
+      case 2:
+        return 'Thuesday';
+      case 3:
+        return 'Wednesday';
+      case 4:
+        return 'Thursday';
+      case 5:
+        return 'Friday';
+      case 6:
+        return 'Saturday';
+      case 7:
+        return 'Sunday';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text('Forecast'),
+    var itemsList = List<ListTile>();
+    itemsList.add(ListTile(
+      title: Text('TODAY'),
+    ));
+    forecast.forEach((element) {
+      itemsList.add(ListTile(
+        shape: Border(
+            bottom: BorderSide(width: double.infinity, color: Colors.black)),
+        leading: Image.asset(
+          'assets/openweathermap_icons/' +
+              element.weatherDescription.iconName +
+              '.png',
+          scale: 1,
+          isAntiAlias: true,
         ),
-      ),
-    );
+        title: Text('${element.datetime.hour}:00'),
+        subtitle: Text('${element.weatherDescription.description}'),
+        trailing: Text(
+          '${element.temperature}°C',
+          style: TextStyle(
+              fontSize: 40,
+              color: Colors.lightBlueAccent,
+              fontWeight: FontWeight.w300),
+        ),
+      ));
+      if (element.datetime.hour == 21)
+        itemsList.add(ListTile(
+            title: Text(_weekdayToReadableDay(element.datetime.weekday))));
+    });
+
+    return Scaffold(
+        backgroundColor: Colors.grey[300],
+        appBar: AppBar(
+          title: Center(
+            child: Text('Forecast for ${forecast[0].city}'),
+          ),
+        ),
+        body:
+            /* BlocBuilder<ForecastBloc, List<Weather>>(
+        cubit: App.forecastBloc,
+        builder: (_, _forecast) {
+          var itemsList;
+          forecast.forEach((element) => itemsList.add(ListTile(
+                title: Text('${element.datetime.hour}:00'),
+              )));
+          return */
+            ListView(
+          children: [...itemsList],
+        ) /*;
+        },
+      ),*/
+        );
   }
 }
 
@@ -178,9 +251,7 @@ class WeatherPage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => ForecastPage())),
                   )
-                ]
-                // Text('$count', style: Theme.of(context).textTheme.headline1),
-                ),
+                ]),
           );
         },
       ),
@@ -203,21 +274,21 @@ class WeatherBloc extends Bloc<WeatherViewEvent, Weather> {
   }
 }
 
-enum ForecastUpdateEvent { upToDate, outDated }
+enum ForecastEvent { upToDate, outDated }
 
-class ForecastUpdaterBloc extends Bloc<ForecastUpdateEvent, List<Weather>> {
-  ForecastUpdaterBloc(List<Weather> initialState) : super(List<Weather>());
+class ForecastBloc extends Bloc<ForecastEvent, List<Weather>> {
+  ForecastBloc(List<Weather> initialState) : super(List<Weather>());
   final OpenWeatherMapAPI _api = OpenWeatherMapAPI();
 
   @override
-  Stream<List<Weather>> mapEventToState(ForecastUpdateEvent event) async* {
+  Stream<List<Weather>> mapEventToState(ForecastEvent event) async* {
     switch (event) {
-      case ForecastUpdateEvent.outDated:
+      case ForecastEvent.outDated:
         var position = await getCurrentLocation();
         var newState = await _api.getForecastByCoordinates(position);
         yield newState;
         break;
-      case ForecastUpdateEvent.upToDate:
+      case ForecastEvent.upToDate:
         break;
       default:
         addError(Exception('unsupported event'));

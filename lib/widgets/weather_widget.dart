@@ -11,8 +11,9 @@ class WeatherWidget extends StatelessWidget {
     Position(
       // latitude: 52.42536875588388,
       // longitude: 31.021136747104755
-        latitude: 52.35308471250674,
-        longitude: 31.106725359980484);
+      latitude: 52.35308471250674,
+      longitude: 31.106725359980484
+    );
     print(currentLocation);
     final weatherList = await weatherAPI.getForecastByCoordinates(currentLocation);
     print(weatherList);
@@ -35,22 +36,25 @@ class WeatherWidget extends StatelessWidget {
             child: Column(
               children: [
                 Image.asset(
-                  'assets/openweathermap_icons/' + '13n.png',
-                  /*+ weather.weatherDescription.iconName*/
+                  'assets/openweathermap_icons/' +
+                      weather.weatherDescription.iconName+'.png',
                   scale: 0.4,
                   isAntiAlias: true,
                 ),
                 Text(
-                  'Location',
+                  weather.city,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
                 ),
                 Text(
-                  '${weather.temperature}°C | Snow',
+                  '${weather.temperature}°C | ${weather.weatherDescription.main}',
                   style: TextStyle(
                       fontSize: 40,
                       color: Colors.lightBlueAccent,
                       fontWeight: FontWeight.w300),
                 ),
+                Text('${weather.weatherDescription.description}'),
+                Text('Pressure: ${weather.pressure.round()} kPa'),
+                Text('Humidity:  ${weather.humidity.round()}%'),
                 ElevatedButton(
                     onPressed: () async => _getForecastRoutine(),
                     child: null

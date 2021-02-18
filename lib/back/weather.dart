@@ -12,12 +12,13 @@ class Weather {
       this.weatherDescription,
       this.datetime});
 
-  Weather.fromMap(Map<String, dynamic> map) {
+  Weather.fromMap(Map<String, dynamic> map, String city) {
     datetime = DateTime.parse(map['dt_txt'].toString());
     temp = _doubleParser(map['main']['temp']);
     pressure = _doubleParser(map['main']['pressure']);
     humidity = _doubleParser(map['main']['humidity']);
     weatherDescription = WeatherDescription.fromMap(map['weather'][0]);
+    this.city = city;
   }
 
   DateTime datetime;
@@ -26,6 +27,8 @@ class Weather {
   double humidity;
   WeatherDescription weatherDescription;
 
+  String city;
+
   int get temperature => (temp-273).round();
   @override
   String toString() =>
@@ -33,7 +36,9 @@ class Weather {
       datetime.toLocal().toString() +
       ' pressure: $pressure' +
       ' temp: $temp' +
-      ' humidity: $humidity';
+      ' humidity: $humidity' +
+      ' city: $city' +
+      ' weather_desc: $weatherDescription';
 }
 
 class WeatherDescription {

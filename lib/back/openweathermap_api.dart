@@ -39,9 +39,11 @@ class OpenWeatherMapAPI extends WeatherAPI {
 
   List<Weather> _responseToWeatherList(http.Response response) {
     final List<Weather> weatherList = List<Weather>();
-    List<dynamic> list = jsonDecode(response.body)['list'];
+    var decodedResponse = jsonDecode(response.body);
+    List<dynamic> list = decodedResponse['list'];
+    String city = decodedResponse['city']['name'];
     list.forEach((element) {
-      weatherList.add(Weather.fromMap(element));
+      weatherList.add(Weather.fromMap(element, city));
     });
     return weatherList;
   }
