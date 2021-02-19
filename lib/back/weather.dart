@@ -39,6 +39,15 @@ class Weather {
       ' humidity: $humidity' +
       ' city: $city' +
       ' weather_desc: $weatherDescription';
+  //TODO
+  String toPrettyString() =>
+      'Weather: ' +
+          datetime.toLocal().toString() +
+          ' pressure: $pressure' +
+          ' temp: $temp' +
+          ' humidity: $humidity' +
+          ' city: $city' +
+          ' weather_desc: $weatherDescription';
 }
 
 class WeatherDescription {

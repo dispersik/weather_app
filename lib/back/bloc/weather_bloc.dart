@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/main.dart';
 
 import '../weather.dart';

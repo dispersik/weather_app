@@ -43,9 +43,11 @@ class WeatherWidget extends StatelessWidget {
                       height: 220,
                       width: 220,
                       color:
-                      (!(weather.weatherDescription.iconName.indexOf('n') !=
-                          -1||weather.weatherDescription.iconName.indexOf('13') !=
-                          -1))
+                          (!(weather.weatherDescription.iconName.indexOf('n') !=
+                                      -1 ||
+                                  weather.weatherDescription.iconName
+                                          .indexOf('13') !=
+                                      -1))
                               ? Colors.yellow[800]
                               : Colors.black26),
                 ),
@@ -70,13 +72,39 @@ class WeatherWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/opensource_weather_icons/barometer.svg",
+                            height: 30,
+                            width: 30,
+                            color: Colors.lightBlueAccent[700],
+                          ),
+                        ],
+                      ),
+                    ),
                     Text(
                       'Pressure\n${weather.pressure.round()} kPa',
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.w300),
                     ),
                     SizedBox(width: 20),
+                    Container(
+                      child: Column(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/opensource_weather_icons/humidity.svg",
+                            width: 30,
+                            height: 30,
+                            color: Colors.lightBlueAccent[700],
+                          ),
+                        ],
+                      ),
+                    ),
                     Text('Humidity\n${weather.humidity.round()}%',
-                        textAlign: TextAlign.center),
+                        textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w300)),
                   ],
                 ),
               ],

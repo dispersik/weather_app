@@ -10,9 +10,8 @@ import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
 import 'package:weather_app/back/openweathermap_api.dart';
 import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/widgets/ui_helper.dart';
 import 'package:weather_app/widgets/weather_widget.dart';
-
-import '../main.dart';
 import 'forecast_page.dart';
 
 class WeatherPage extends StatelessWidget {
@@ -31,7 +30,7 @@ class WeatherPage extends StatelessWidget {
           children: [
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.only(left: 60.0),
+              padding: const EdgeInsets.only(left: 50.0),
               child: const Text(
                 'Weather',
                 textAlign: TextAlign.center,
@@ -52,8 +51,8 @@ class WeatherPage extends StatelessWidget {
         shadowColor: Colors.transparent,
       ),
       body: BlocBuilder<WeatherBloc, Weather>(
-        builder: (_, weather) {
-          if (weather==null)
+        builder: (context, weather) {
+          if (weather == null)
             context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
           return SizedBox.expand(
               child: Column(children: [
@@ -65,6 +64,7 @@ class WeatherPage extends StatelessWidget {
               child: (weather != null)
                   ? ListView(physics: BouncingScrollPhysics(), children: [
                       Column(
+                          mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -75,10 +75,7 @@ class WeatherPage extends StatelessWidget {
                             GestureDetector(
                               child: Text(
                                 'Forecast for 5 days',
-                                style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w300),
+                                style: _forecastButtonStyle,
                               ),
                               onTap: () => Navigator.pushReplacement(
                                   context,
@@ -91,13 +88,13 @@ class WeatherPage extends StatelessWidget {
                             GestureDetector(
                               child: Text(
                                 'Share',
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.w300),
+                                style: _shareButtonStyle,
                               ),
                               onTap: () async =>
                                   await _shareWeather(context, weather),
+                            ),
+                            SizedBox(
+                              height: 30,
                             )
                           ])
                     ])
@@ -127,3 +124,11 @@ class WeatherPage extends StatelessWidget {
     );
   }
 }
+
+final _shareButtonStyle =
+    TextStyle(fontSize: 30, color: Colors.orange, fontWeight: FontWeight.w300);
+
+final _forecastButtonStyle = TextStyle(
+    fontSize: 25,
+    color: Colors.black87,
+    fontWeight: FontWeight.w300);

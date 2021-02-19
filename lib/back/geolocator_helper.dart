@@ -12,7 +12,7 @@ Future<Position> getCurrentLocation() async {
     print('get location');
     result = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 10),
+        timeLimit: Duration(seconds: 20),
         forceAndroidLocationManager: true
     );
   } catch (e) {
