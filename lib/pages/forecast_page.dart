@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
 import 'package:weather_app/back/forecast.dart';
@@ -54,13 +55,26 @@ class ForecastPage extends StatelessWidget {
         shape: Border(
           top: BorderSide(width: double.infinity, color: Colors.black),
         ),
-        leading: Image.asset(
-          'assets/openweathermap_icons/' +
-              element.weatherDescription.iconName +
-              '.png',
-          scale: 1,
-          isAntiAlias: true,
-        ),
+        leading:
+        // Image.asset(
+        //   'assets/openweathermap_icons/' +
+        //       element.weatherDescription.iconName +
+        //       '.png',
+        //   scale: 1,
+        //   isAntiAlias: true,
+        // ),
+        SvgPicture.asset(
+            'assets/opensource_weather_icons/' +
+                element.weatherDescription.iconName +
+                '.svg',
+            height: 40,
+            width: 40,
+            color:
+            (!(element.weatherDescription.iconName.indexOf('n') !=
+                -1||element.weatherDescription.iconName.indexOf('13') !=
+                -1))
+                ? Colors.yellow[800]
+                : Colors.black26),
         title: Text('${element.datetime.hour}:00'),
         subtitle: Text('${element.weatherDescription.description}'),
         trailing: Text(

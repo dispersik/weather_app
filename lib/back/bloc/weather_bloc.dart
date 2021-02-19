@@ -10,7 +10,6 @@ enum WeatherEvent {
 }
 
 class WeatherBloc extends Bloc<WeatherEvent, Weather> {
-  // WeatherBloc(Weather initialState) : super(initialState);
   WeatherBloc() : super(null);
   // [_index] used for loading specific timestamp
   int _index=0;
@@ -30,6 +29,5 @@ class WeatherBloc extends Bloc<WeatherEvent, Weather> {
         yield forecast[_index];
         break;
     }
-    // throw UnimplementedError();
   }
 }

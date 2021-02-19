@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/back/helper.dart';
 import 'package:weather_app/back/openweathermap_api.dart';
@@ -33,12 +34,20 @@ class WeatherWidget extends StatelessWidget {
           child: Container(
             child: Column(
               children: [
-                Image.asset(
-                  'assets/openweathermap_icons/' +
-                      weather.weatherDescription.iconName +
-                      '.png',
-                  scale: 0.4,
-                  isAntiAlias: true,
+                Padding(
+                  padding: const EdgeInsets.only(top: 40.0),
+                  child: SvgPicture.asset(
+                      'assets/opensource_weather_icons/' +
+                          weather.weatherDescription.iconName +
+                          '.svg',
+                      height: 220,
+                      width: 220,
+                      color:
+                      (!(weather.weatherDescription.iconName.indexOf('n') !=
+                          -1||weather.weatherDescription.iconName.indexOf('13') !=
+                          -1))
+                              ? Colors.yellow[800]
+                              : Colors.black26),
                 ),
                 Text(
                   "${weather.city}\n${_dateHelper(weather.datetime)}, ${_timeHelper(weather.datetime)}",
@@ -77,17 +86,23 @@ class WeatherWidget extends StatelessWidget {
       ],
     );
   }
+
   String _dateHelper(DateTime time) {
-    if (DateTime.now().day==time.day) return 'Today';
-    else return weekdayToReadableDay(time.weekday);
+    if (DateTime.now().day == time.day)
+      return 'Today';
+    else
+      return weekdayToReadableDay(time.weekday);
   }
+
   String _timeHelper(DateTime time) {
     var now = DateTime.now();
-    if (now.isAfter(time)&&_dateHelper(time)=='Today') {
+    if (now.isAfter(time) && _dateHelper(time) == 'Today') {
       var result = '${now.hour}:';
-      if (now.minute<10) return result+'0${now.minute}';
-      else return result+now.minute.toString();
-    }
-    else return '${time.hour}:00';
+      if (now.minute < 10)
+        return result + '0${now.minute}';
+      else
+        return result + now.minute.toString();
+    } else
+      return '${time.hour}:00';
   }
 }

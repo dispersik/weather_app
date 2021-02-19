@@ -11,7 +11,10 @@ Future<Position> getCurrentLocation() async {
   try {
     print('get location');
     result = await Geolocator.getCurrentPosition(
-        timeLimit: Duration(seconds: 10), forceAndroidLocationManager: true);
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: Duration(seconds: 10),
+        forceAndroidLocationManager: true
+    );
   } catch (e) {
     print(e);
     return Future.error('Failed to get current location');

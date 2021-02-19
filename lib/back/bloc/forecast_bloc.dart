@@ -7,7 +7,7 @@ import 'package:weather_app/back/forecast.dart';
 import '../../main.dart';
 import '../geolocator_helper.dart';
 import '../openweathermap_api.dart';
-import '../weather.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum ForecastEvent { getNewForecast, validateExpireState, getCurrentForecast }
 
@@ -30,15 +30,18 @@ class ForecastBloc extends Bloc<ForecastEvent, Forecast> {
           position = await getCurrentLocation();
         } catch (e) {
           print('error in bloc: $e');
-          position = Position(
-              latitude: 35.34740561167222, longitude: 139.40772737368098);
         }
-        try {
-          forecast = await _api.getForecastByCoordinates(position);
-        } catch (e) {
-          print('error in bloc: $e');
+        if (position != null) {
+          try {
+            forecast = await _api.getForecastByCoordinates(position);
+          } catch (e) {
+            print('error in bloc: $e');
+            addError(e.toString());
+          }
+          yield Forecast(forecast);
+        } else {
+          addError('Cannot determine position');
         }
-        yield Forecast(forecast);
         break;
       default:
         addError(Exception('unsupported event'));
