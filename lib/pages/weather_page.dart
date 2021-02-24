@@ -8,7 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:share/share.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
-import 'package:weather_app/back/openweathermap_api.dart';
+import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/weather.dart';
 import 'package:weather_app/widgets/ui_helper.dart';
 import 'package:weather_app/widgets/weather_widget.dart';

@@ -5,9 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/back/weather.dart';
 
-const String apiKey = '603887f8f6f98b5e4c24fd9877a40061';
-
 class OpenWeatherMapAPI extends WeatherAPI {
+  
+  static const String _apiKey = '603887f8f6f98b5e4c24fd9877a40061';
+  static const String _apiLocation = 'http://api.openweathermap.org/data/2.5/';
+  
   @override
   Future<List<Weather>> getForecastByCoordinates(Position position) async {
     var response;
@@ -22,11 +24,10 @@ class OpenWeatherMapAPI extends WeatherAPI {
 
   static Future<http.Response> _getCurrentForecastByCoordinates(
       Position position,
-      [String apiKey = apiKey]) async {
-    var apiLocation = 'http://api.openweathermap.org/data/2.5/';
+      [String apiKey = _apiKey]) async {
     var apiQuery =
         'forecast?lat=${position.latitude}&lon=${position.longitude}&APPID=$apiKey';
-    var uri = apiLocation + apiQuery;
+    var uri = _apiLocation + apiQuery;
     var result;
     try {
       result = http.get(uri);
@@ -46,6 +47,16 @@ class OpenWeatherMapAPI extends WeatherAPI {
       weatherList.add(Weather.fromMap(element, city));
     });
     return weatherList;
+  }
+  
+  Future<bool> pingAPI() {
+    try {
+      http.get(_apiLocation+'weather?q=London,uk&appid=$_apiKey');
+    } catch(e) {
+      print(e);
+      return Future.value(false);
+    }
+    return Future.value(true);
   }
 }
 

@@ -15,6 +15,25 @@ import 'package:geolocator/geolocator.dart';
 //   return result;
 // }
 
+Future<Position> geolocatorRoutine() async {
+  // firstly check permissions
+  try {
+    await checkAccessability();
+  } catch (e) {
+    return Future.error(e);
+  }
+
+  // if ok, trying to obtain current position
+  var position;
+  try {
+    position = await getCurrentLocationBrute();
+  } catch (e) {
+    print('error in bloc: $e');
+    return Future.error(e);
+  }
+  return position;
+}
+
 Future<Position> getCurrentLocationBrute() async {
   var result;
   var accuracies = [
