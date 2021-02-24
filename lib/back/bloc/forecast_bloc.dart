@@ -51,17 +51,17 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
         break;
       case ForecastEvent.getNewForecast:
         _busy();
+        yield ForecastState.onGet(_prevState());
         try {
-        forecast = await _repository.fromAPI();
-        } catch(e) {
-          print(e);
+          forecast = await _repository.fromAPI();
+        } catch (e) {
+          print('err: $e');
           _notBusy();
-          ForecastState.onError(_prevState(),
-              error: e.toString());
+          yield ForecastState.onError(_prevState(), error: e.toString());
           break;
         }
         _notBusy();
-        yield ForecastState(forecast);
+        yield ForecastState(forecast.forecast);
         break;
       default:
         _notBusy();

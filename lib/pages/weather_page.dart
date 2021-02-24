@@ -101,22 +101,32 @@ class WeatherPage extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                          SizedBox(
-                              height: 100,
-                              width: 100,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 10,
-                              )),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'initializing',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300, fontSize: 20),
-                          ),
-                        ]),
+                      children: (context.read<ForecastBloc>().state.haveError)
+                          ? [
+                              Text(
+                                  'Cannot obtain forecast'),
+                              ElevatedButton(
+                                  onPressed: () => context
+                                      .read<ForecastBloc>()
+                                      .add(ForecastEvent.getNewForecast),
+                                  child: Text('try again'))
+                            ]
+                          : [
+                              SizedBox(
+                                  height: 100,
+                                  width: 100,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 10,
+                                  )),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                'initializing',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300, fontSize: 20),
+                              ),
+                            ]),
             ),
           ]));
         },
@@ -128,7 +138,5 @@ class WeatherPage extends StatelessWidget {
 final _shareButtonStyle =
     TextStyle(fontSize: 30, color: Colors.orange, fontWeight: FontWeight.w300);
 
-final _forecastButtonStyle = TextStyle(
-    fontSize: 25,
-    color: Colors.black87,
-    fontWeight: FontWeight.w300);
+final _forecastButtonStyle =
+    TextStyle(fontSize: 25, color: Colors.black87, fontWeight: FontWeight.w300);

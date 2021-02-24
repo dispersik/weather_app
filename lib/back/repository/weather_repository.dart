@@ -10,6 +10,7 @@ class WeatherRepository extends Repository {
 
   @override
   Future<Forecast> getForecast() async {
+    // TODO change logic to try/catch
     var forecast = await fromAPI();
     if (forecast == null) {
       try {
@@ -36,11 +37,11 @@ class WeatherRepository extends Repository {
           forecast = await api.getForecastByCoordinates(position);
         } catch (e) {
           print(e);
-          return Future.error(e);
+          return Future.error('No Internet connection');
         }
       }
     }
-    return forecast;
+    return Forecast(forecast);
   }
 
   @override
