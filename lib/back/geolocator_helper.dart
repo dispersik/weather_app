@@ -1,28 +1,47 @@
 import 'package:geolocator/geolocator.dart';
 
-Future<Position> getCurrentLocation() async {
-  try {
-    _checkAccessability();
-  } catch (e) {
-    print(e);
-    return Future.error('Failed to get permissions');
-  }
+// Future<Position> getCurrentLocation() async {
+//   var result;
+//   try {
+//     print('get location');
+//     result = await Geolocator.getCurrentPosition(
+//         desiredAccuracy: LocationAccuracy.lowest,
+//         timeLimit: Duration(seconds: 20),
+//         forceAndroidLocationManager: false);
+//   } catch (e) {
+//     print(e);
+//     return Future.error('Failed to get current location');
+//   }
+//   return result;
+// }
+
+Future<Position> getCurrentLocationBrute() async {
   var result;
-  try {
-    print('get location');
-    result = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: Duration(seconds: 20),
-        forceAndroidLocationManager: true
-    );
-  } catch (e) {
-    print(e);
-    return Future.error('Failed to get current location');
+  var accuracies = [
+    LocationAccuracy.best,
+    LocationAccuracy.high,
+    LocationAccuracy.medium,
+    LocationAccuracy.low,
+    LocationAccuracy.lowest,
+  ];
+
+  for (var accuracy in accuracies) {
+    try {
+      print('brute get location');
+      result = await Geolocator.getCurrentPosition(
+          desiredAccuracy: accuracy,
+          timeLimit: Duration(seconds: 5),
+          forceAndroidLocationManager: false);
+    } catch (e) {
+      print(e);
+      continue;
+    }
+    break;
   }
-  return result;
+  return result ?? Future.error('Failed to get current location');
 }
 
-Future<void> _checkAccessability() async {
+Future<void> checkAccessability() async {
   bool serviceEnabled;
   LocationPermission permission;
 

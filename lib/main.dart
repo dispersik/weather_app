@@ -10,6 +10,7 @@ import 'package:weather_app/pages/weather_page.dart';
 import 'back/bloc/bloc_core.dart';
 import 'back/bloc/forecast_bloc.dart';
 import 'back/bloc/weather_bloc.dart';
+import 'back/forecast_state.dart';
 
 List<Weather> forecast = List<Weather>();
 
@@ -31,17 +32,17 @@ class _AppState extends State<App> {
         BlocProvider(create: (context) => ForecastBloc()),
         BlocProvider(create: (context) => WeatherBloc()),
       ],
-      child: BlocListener<ForecastBloc, Forecast>(
+      child: BlocListener<ForecastBloc, ForecastState>(
         listener: (context, state) {
-          print('forecast new state: ${state.forecast[0]}');
+          // print('forecast new state: ${state.forecast[0]}');
           // TODO match timestamp after updating
-          context.read<WeatherBloc>().add(WeatherEvent.setCurrentWeather);
-          // Fluttertoast.showToast(
-          //     msg: "MESSage".toUpperCase(),
-          //     toastLength: Toast.LENGTH_SHORT,
-          //     gravity: ToastGravity.BOTTOM,
-          //     timeInSecForIosWeb: 1
-          // );
+          if (state.forecast != null)
+            context.read<WeatherBloc>().add(WeatherEvent.setCurrentWeather);
+          if (state.haveError) Fluttertoast.showToast(
+              msg: state.error,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1);
         },
         child: MaterialApp(home: WeatherPage()),
       ),

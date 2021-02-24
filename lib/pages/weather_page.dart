@@ -52,7 +52,7 @@ class WeatherPage extends StatelessWidget {
       ),
       body: BlocBuilder<WeatherBloc, Weather>(
         builder: (context, weather) {
-          if (weather == null)
+          if (weather == null && !context.read<ForecastBloc>().busy)
             context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
           return SizedBox.expand(
               child: Column(children: [
