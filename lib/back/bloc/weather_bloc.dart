@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/back/entities/weather_state.dart';
 import 'package:weather_app/main.dart';
 
 import '../entities/weather.dart';
@@ -17,7 +18,7 @@ class WeatherEvent {
   final Weather value;
 }
 
-class WeatherBloc extends Bloc<WeatherEvent, Weather> {
+class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(null);
   // [_index] used for loading specific timestamp
   int _index=0;
@@ -28,10 +29,13 @@ class WeatherBloc extends Bloc<WeatherEvent, Weather> {
   }
 
   @override
-  Stream<Weather> mapEventToState(WeatherEvent event) async* {
+  Stream<WeatherState> mapEventToState(WeatherEvent event) async* {
     switch(event.type) {
+      case WeatherEventType.waitForWeather:
+        yield WeatherState.onGet(state);
+        break;
       case WeatherEventType.setWeather:
-        yield event.value;
+        yield WeatherState(event.value);
         break;
       case WeatherEventType.setCurrentWeather:
         yield forecast[0];

@@ -10,7 +10,8 @@ class Weather {
       this.temp,
       this.pressure,
       this.weatherDescription,
-      this.datetime});
+      this.datetime,
+      this.city});
   
   Weather.copyOf(Weather weather) {
     datetime = weather.datetime;
