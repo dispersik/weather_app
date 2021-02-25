@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
 class Forecast {
   Forecast(this.forecast);

@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/back/helper.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
 class WeatherWidget extends StatelessWidget {
   Future<void> _getForecastRoutine() async {

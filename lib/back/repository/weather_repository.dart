@@ -1,4 +1,4 @@
-import 'package:weather_app/back/forecast.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/geolocator_helper.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/repository/repository_core.dart';
@@ -40,8 +40,9 @@ class WeatherRepository extends Repository {
           return Future.error('No Internet connection');
         }
       }
+      return Forecast(forecast);
     }
-    return Forecast(forecast);
+    return Future.error('No Internet connection');
   }
 
   @override

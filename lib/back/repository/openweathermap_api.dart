@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:weather_app/back/weather.dart';
+import 'package:http/http.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
 class OpenWeatherMapAPI extends WeatherAPI {
   
@@ -17,7 +18,7 @@ class OpenWeatherMapAPI extends WeatherAPI {
       response = await _getCurrentForecastByCoordinates(position);
     } catch (e) {
       print(e);
-      rethrow;
+      return Future.error(e);
     }
     return _responseToWeatherList(response);
   }
@@ -33,7 +34,7 @@ class OpenWeatherMapAPI extends WeatherAPI {
       result = http.get(uri);
     } catch (e) {
       print(e);
-      rethrow;
+      return Future.error(e);
     }
     return result;
   }
@@ -44,18 +45,20 @@ class OpenWeatherMapAPI extends WeatherAPI {
     List<dynamic> list = decodedResponse['list'];
     String city = decodedResponse['city']['name'];
     list.forEach((element) {
-      weatherList.add(Weather.fromMap(element, city));
+      weatherList.add(Weather.fromAPI(element, city));
     });
     return weatherList;
   }
   
-  Future<bool> pingAPI() {
+  Future<bool> pingAPI() async {
+    http.Response temp;
     try {
-      http.get(_apiLocation+'weather?q=London,uk&appid=$_apiKey');
+      temp = await http.get(_apiLocation+'weather?q=London,uk&appid=$_apiKey');
     } catch(e) {
-      print(e);
+      print("$e\n[pingAPI()] failed");
       return Future.value(false);
     }
+    if (temp.statusCode!=200) return Future.value(false);
     return Future.value(true);
   }
 }

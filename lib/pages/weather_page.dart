@@ -9,7 +9,7 @@ import 'package:share/share.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/weather.dart';
 import 'package:weather_app/widgets/ui_helper.dart';
 import 'package:weather_app/widgets/weather_widget.dart';
 import 'forecast_page.dart';
@@ -54,6 +54,7 @@ class WeatherPage extends StatelessWidget {
         builder: (context, weather) {
           if (weather == null && !context.read<ForecastBloc>().busy)
             context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
+          print('\n\n\nweather page building\n\n\n');
           return SizedBox.expand(
               child: Column(children: [
             Container(
@@ -101,10 +102,11 @@ class WeatherPage extends StatelessWidget {
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: (context.read<ForecastBloc>().state.haveError)
+                      children: (context.read<ForecastBloc>().state != null &&
+                              context.read<ForecastBloc>().state.haveError &&
+                              !context.read<ForecastBloc>().state.gettingValue)
                           ? [
-                              Text(
-                                  'Cannot obtain forecast'),
+                              Text('Cannot obtain forecast'),
                               ElevatedButton(
                                   onPressed: () => context
                                       .read<ForecastBloc>()

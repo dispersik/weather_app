@@ -1,4 +1,4 @@
-import 'package:weather_app/back/forecast.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/repository/repository_core.dart';
 
 class LocalRepository extends Repository {

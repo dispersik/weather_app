@@ -1,4 +1,4 @@
-import '../forecast.dart';
+import '../entities/forecast.dart';
 
 abstract class Repository {
   Future<Forecast> getForecast();

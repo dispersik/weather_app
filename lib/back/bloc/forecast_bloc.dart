@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/back/forecast.dart';
-import 'package:weather_app/back/forecast_state.dart';
+import 'package:weather_app/back/entities/forecast.dart';
+import 'package:weather_app/back/entities/forecast_state.dart';
 import 'package:weather_app/back/repository/repository_core.dart';
 import 'package:weather_app/back/repository/weather_repository.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
 import '../../main.dart';
 import '../geolocator_helper.dart';

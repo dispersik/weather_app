@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:weather_app/back/forecast.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 
 class ForecastState extends Forecast {
   // used while getting values

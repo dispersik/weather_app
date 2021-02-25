@@ -11,8 +11,17 @@ class Weather {
       this.pressure,
       this.weatherDescription,
       this.datetime});
+  
+  Weather.copyOf(Weather weather) {
+    datetime = weather.datetime;
+    temp = weather.temp;
+    pressure = weather.pressure;
+    humidity = weather.humidity;
+    weatherDescription = weather.weatherDescription;
+    city = weather.city;
+  }
 
-  Weather.fromMap(Map<String, dynamic> map, String city) {
+  Weather.fromAPI(Map<String, dynamic> map, String city) {
     datetime = DateTime.parse(map['dt_txt'].toString());
     temp = _doubleParser(map['main']['temp']);
     pressure = _doubleParser(map['main']['pressure']);
@@ -20,7 +29,6 @@ class Weather {
     weatherDescription = WeatherDescription.fromMap(map['weather'][0]);
     this.city = city;
   }
-
   DateTime datetime;
   double temp;
   double pressure;

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
-import 'package:weather_app/back/forecast.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/helper.dart';
 import 'package:weather_app/pages/weather_page.dart';
 
@@ -87,7 +87,7 @@ class ForecastPage extends StatelessWidget {
         onTap: () {
           context.read<WeatherBloc>()
             ..index(_forecast.indexOf(element))
-            ..add(WeatherEvent.setByIndex);
+            ..add(WeatherEvent(type: WeatherEventType.setByIndex));
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => WeatherPage()));
         },

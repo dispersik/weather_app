@@ -1,11 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/main.dart';
 
-import '../weather.dart';
+import '../entities/weather.dart';
 
-enum WeatherEvent {
+enum WeatherEventType {
+  setWeather,
   setCurrentWeather,
   setByIndex,
+  waitForWeather
+}
+
+class WeatherEvent {
+  const WeatherEvent({@required this.type, this.value});
+  final WeatherEventType type;
+  final Weather value;
 }
 
 class WeatherBloc extends Bloc<WeatherEvent, Weather> {
@@ -20,11 +29,14 @@ class WeatherBloc extends Bloc<WeatherEvent, Weather> {
 
   @override
   Stream<Weather> mapEventToState(WeatherEvent event) async* {
-    switch(event) {
-      case WeatherEvent.setCurrentWeather:
+    switch(event.type) {
+      case WeatherEventType.setWeather:
+        yield event.value;
+        break;
+      case WeatherEventType.setCurrentWeather:
         yield forecast[0];
         break;
-      case WeatherEvent.setByIndex:
+      case WeatherEventType.setByIndex:
         yield forecast[_index];
         break;
     }
