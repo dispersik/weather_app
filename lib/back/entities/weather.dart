@@ -40,14 +40,14 @@ class Weather {
 
   int get temperature => (temp-273).round();
   @override
-  String toString() =>
-      'Weather: ' +
-      datetime.toLocal().toString() +
-      ' pressure: $pressure' +
-      ' temp: $temp' +
-      ' humidity: $humidity' +
-      ' city: $city' +
-      ' weather_desc: $weatherDescription';
+  // String toString() =>
+  //     'Weather: ' +
+  //     datetime.toLocal().toString() +
+  //     ' pressure: $pressure' +
+  //     ' temp: $temp' +
+  //     ' humidity: $humidity' +
+  //     ' city: $city' +
+  //     ' weather_desc: $weatherDescription';
   //TODO
   String toPrettyString() =>
       'Weather: ' +

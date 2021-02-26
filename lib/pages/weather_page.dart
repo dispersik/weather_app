@@ -8,19 +8,23 @@ import 'package:geolocator/geolocator.dart';
 import 'package:share/share.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
+import 'package:weather_app/back/entities/weather_state.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/entities/weather.dart';
 import 'package:weather_app/widgets/ui_helper.dart';
+import 'package:weather_app/widgets/weather_err.dart';
+import 'package:weather_app/widgets/weather_loading.dart';
+import 'package:weather_app/widgets/weather_view.dart';
 import 'package:weather_app/widgets/weather_widget.dart';
 import 'forecast_page.dart';
 
 class WeatherPage extends StatelessWidget {
-  Future<void> _shareWeather(BuildContext context, Weather weather) async {
-    final RenderBox box = context.findRenderObject();
-    await Share.share(weather.toString(),
-        subject: 'Weather',
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-  }
+  // Future<void> _shareWeather(BuildContext context, Weather weather) async {
+  //   final RenderBox box = context.findRenderObject();
+  //   await Share.share(weather.toString(),
+  //       subject: 'Weather',
+  //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class WeatherPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
-      body: BlocBuilder<WeatherBloc, Weather>(
+      body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, weather) {
           if (weather == null && !context.read<ForecastBloc>().busy)
             context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
@@ -62,8 +66,14 @@ class WeatherPage extends StatelessWidget {
               color: Colors.black26,
             ),
             Expanded(
-              child: (weather != null)
-                  ? ListView(physics: BouncingScrollPhysics(), children: [
+              child: (weather != null && weather.state == WeatherStates.view)
+                  ? WeatherView(weather)
+                  : (weather != null && weather.state == WeatherStates.err)
+                      ? WeatherErr(weather)
+                      : WeatherLoading()
+              /*(weather != null)
+                  ? */
+              /*ListView(physics: BouncingScrollPhysics(), children: [
                       Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -98,8 +108,10 @@ class WeatherPage extends StatelessWidget {
                               height: 30,
                             )
                           ])
-                    ])
-                  : Column(
+                    ])*/
+              // :
+
+              /*Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: (context.read<ForecastBloc>().state != null &&
@@ -128,7 +140,8 @@ class WeatherPage extends StatelessWidget {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300, fontSize: 20),
                               ),
-                            ]),
+                            ])*/
+              ,
             ),
           ]));
         },
@@ -137,8 +150,10 @@ class WeatherPage extends StatelessWidget {
   }
 }
 
+/*
 final _shareButtonStyle =
     TextStyle(fontSize: 30, color: Colors.orange, fontWeight: FontWeight.w300);
 
 final _forecastButtonStyle =
     TextStyle(fontSize: 25, color: Colors.black87, fontWeight: FontWeight.w300);
+*/

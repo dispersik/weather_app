@@ -9,7 +9,8 @@ enum WeatherEventType {
   setWeather,
   setCurrentWeather,
   setByIndex,
-  waitForWeather
+  waitForWeather,
+  error
 }
 
 class WeatherEvent {
@@ -36,6 +37,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         break;
       case WeatherEventType.setWeather:
         yield WeatherState(event.value);
+        break;
+      case WeatherEventType.error:
+        yield WeatherState.onErr(state);
         break;
       case WeatherEventType.setCurrentWeather:
         yield forecast[0];

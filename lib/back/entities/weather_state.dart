@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:weather_app/back/entities/weather.dart';
 
+enum WeatherStates {
+  view, gettingValue, err
+}
+
 class WeatherState extends Weather {
   WeatherState(Weather weather) : super.copyOf(weather);
 
-  WeatherState.onGet(WeatherState state) : super.copyOf(state._toWeather()) {
-    gettingValue = true;
+  WeatherState.onGet(WeatherState state) : super()/*super.copyOf(state._toWeather())*/ {
+    // gettingValue = true;
+    this.state = WeatherStates.gettingValue;
   }
 
   Weather _toWeather() {
@@ -18,10 +23,14 @@ class WeatherState extends Weather {
         humidity: humidity);
   }
 
-  WeatherState.onErr(Weather weather, {@required this.err})
-      : super.copyOf(weather);
-  String err;
-  bool gettingValue = false;
+  WeatherState.onErr(Weather weather)
+      : super()/*super.copyOf(weather)*/ {
+    state = WeatherStates.err;
+  }
 
-  bool get hasErr => err != null;
+  // String err;
+  // bool gettingValue = false;
+  WeatherStates state = WeatherStates.view;
+
+  // bool get hasErr => err != null;
 }
