@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:weather_app/back/bloc/scheduler_bloc.dart';
-import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/entities/weather.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/pages/weather_page.dart';

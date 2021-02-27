@@ -1,9 +1,7 @@
 import 'dart:convert';
 
-import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:weather_app/back/entities/weather.dart';
 
 class OpenWeatherMapAPI extends WeatherAPI {
@@ -60,13 +58,5 @@ class OpenWeatherMapAPI extends WeatherAPI {
     }
     if (temp.statusCode!=200) return Future.value(false);
     return Future.value(true);
-  }
-}
-
-String addressToLocation(Address address) {
-  if (address.countryName != null && address.locality != null) {
-    return '${address.locality},${address.countryName}';
-  } else {
-    return null;
   }
 }

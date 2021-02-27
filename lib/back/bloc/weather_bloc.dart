@@ -21,13 +21,6 @@ class WeatherEvent {
 
 class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(null);
-  // [_index] used for loading specific timestamp
-  int _index=0;
-  void index(int index) {
-    if (index>=0) {
-      _index = index;
-    } else throw Exception('Wrong index value');
-  }
 
   @override
   Stream<WeatherState> mapEventToState(WeatherEvent event) async* {
@@ -42,10 +35,10 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         yield WeatherState.onErr(state);
         break;
       case WeatherEventType.setCurrentWeather:
-        yield forecast[0];
+        // yield forecast[0];
         break;
       case WeatherEventType.setByIndex:
-        yield forecast[_index];
+        // yield forecast[_index];
         break;
     }
   }

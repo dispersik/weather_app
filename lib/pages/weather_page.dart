@@ -45,7 +45,7 @@ class WeatherPage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
+                context.read<ForecastBloc>().add(ForecastEvent.getNewForecastFromAPI);
               },
               color: Colors.black54,
             ),
@@ -57,7 +57,7 @@ class WeatherPage extends StatelessWidget {
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, weather) {
           if (weather == null && !context.read<ForecastBloc>().busy)
-            context.read<ForecastBloc>().add(ForecastEvent.getNewForecast);
+            context.read<ForecastBloc>().add(ForecastEvent.getNewForecastFromAPI);
           print('\n\n\nweather page building\n\n\n');
           return SizedBox.expand(
               child: Column(children: [

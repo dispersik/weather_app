@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/back/helper.dart';
-import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/entities/weather.dart';
+import 'package:weather_app/widgets/ui_helper.dart';
 
 class WeatherWidget extends StatelessWidget {
   const WeatherWidget({this.weather});
@@ -28,14 +27,8 @@ class WeatherWidget extends StatelessWidget {
                           '.svg',
                       height: 220,
                       width: 220,
-                      color:
-                          (!(weather.weatherDescription.iconName.indexOf('n') !=
-                                      -1 ||
-                                  weather.weatherDescription.iconName
-                                          .indexOf('13') !=
-                                      -1))
-                              ? Colors.yellow[800]
-                              : Colors.black26),
+                      color: iconColorPicker(weather)
+                  ),
                 ),
                 Text(
                   "${weather.city}\n${_dateHelper(weather.datetime)}, ${_timeHelper(weather.datetime)}",
@@ -71,7 +64,7 @@ class WeatherWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Pressure\n${weather.pressure.round()} kPa',
+                      'Pressure\n${weather.pressure} kPa',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.w300),
                     ),
@@ -88,7 +81,7 @@ class WeatherWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text('Humidity\n${weather.humidity.round()}%',
+                    Text('Humidity\n${weather.humidity}%',
                         textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.w300)),
                   ],

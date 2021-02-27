@@ -5,42 +5,44 @@ import 'package:flutter_svg/svg.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
 import 'package:weather_app/back/entities/forecast.dart';
+import 'package:weather_app/back/entities/forecast_state.dart';
 import 'package:weather_app/back/helper.dart';
 import 'package:weather_app/pages/weather_page.dart';
+import 'package:weather_app/widgets/ui_helper.dart';
 
 import '../main.dart';
 
 class ForecastPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-          title: Center(
-            child: Text('Forecast for ${forecast[0].city}',
-                style: TextStyle(
-                    color: Colors.black, fontWeight: FontWeight.w300)),
-          ),
-        ),
-        body: BlocBuilder<ForecastBloc, Forecast>(
-            builder: (context, _forecast) => Column(
-                  children: [
-                    Container(
-                      height: 0.5,
-                      color: Colors.black,
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                          itemCount: _forecast.forecast.length + 5,
-                          separatorBuilder: (context, index) => Divider(
-                                color: Colors.black,
-                              ),
-                          itemBuilder: (context, index) =>
-                              _buildTiles(context, index, _forecast)),
-                    ),
-                  ],
-                )));
+    return BlocBuilder<ForecastBloc, ForecastState>(
+        builder: (context, _forecast) => Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              title: Center(
+                child: Text('Forecast for ${_cityNameFromForecast(_forecast)}',
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w300)),
+              ),
+            ),
+            body: Column(
+              children: [
+                Container(
+                  height: 0.5,
+                  color: Colors.black,
+                ),
+                Expanded(
+                  child: ListView.separated(
+                      itemCount: _forecast.forecast.length + 5,
+                      separatorBuilder: (context, index) => Divider(
+                            color: Colors.black,
+                          ),
+                      itemBuilder: (context, index) =>
+                          _buildTiles(context, index, _forecast)),
+                ),
+              ],
+            )));
   }
 
   Widget _buildTiles(BuildContext context, int index, Forecast forecast) {
@@ -55,26 +57,14 @@ class ForecastPage extends StatelessWidget {
         shape: Border(
           top: BorderSide(width: double.infinity, color: Colors.black),
         ),
-        leading:
-        // Image.asset(
-        //   'assets/openweathermap_icons/' +
-        //       element.weatherDescription.iconName +
-        //       '.png',
-        //   scale: 1,
-        //   isAntiAlias: true,
-        // ),
-        SvgPicture.asset(
+        leading: SvgPicture.asset(
             'assets/opensource_weather_icons/' +
                 element.weatherDescription.iconName +
                 '.svg',
             height: 40,
             width: 40,
-            color:
-            (!(element.weatherDescription.iconName.indexOf('n') !=
-                -1||element.weatherDescription.iconName.indexOf('13') !=
-                -1))
-                ? Colors.yellow[800]
-                : Colors.black26),
+            color: iconColorPicker(element)
+        ),
         title: Text('${element.datetime.hour}:00'),
         subtitle: Text('${element.weatherDescription.description}'),
         trailing: Text(
@@ -85,9 +75,8 @@ class ForecastPage extends StatelessWidget {
               fontWeight: FontWeight.w300),
         ),
         onTap: () {
-          context.read<WeatherBloc>()
-            ..index(_forecast.indexOf(element))
-            ..add(WeatherEvent(type: WeatherEventType.setByIndex));
+          context.read<WeatherBloc>().add(
+              WeatherEvent(type: WeatherEventType.setWeather, value: element));
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => WeatherPage()));
         },
@@ -102,4 +91,6 @@ class ForecastPage extends StatelessWidget {
     });
     return itemsList[index];
   }
+
+  String _cityNameFromForecast(Forecast forecast) => forecast.forecast[0].city;
 }

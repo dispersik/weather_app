@@ -1,22 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/entities/forecast_state.dart';
-import 'package:weather_app/back/repository/repository_core.dart';
-import 'package:weather_app/back/repository/repository_singleton.dart';
 import 'package:weather_app/back/repository/weather_repository.dart';
 import 'package:weather_app/back/entities/weather.dart';
 
-import '../../main.dart';
-import '../geolocator_helper.dart';
-import '../repository/openweathermap_api.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
 enum ForecastEvent {
   getAnyForecast,
-  getNewForecast,
+  getNewForecastFromAPI,
   validateExpireState,
   getCurrentForecast
 }
@@ -24,13 +15,10 @@ enum ForecastEvent {
 class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   ForecastBloc() : super(null);
 
-  final _api = OpenWeatherMapAPI();
   final _repository = WeatherRepository();
 
   bool busy = false;
-
   void _busy() => busy = true;
-
   void _notBusy() => busy = false;
 
   @override
@@ -50,7 +38,7 @@ class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
         _notBusy();
         yield ForecastState(forecast);
         break;
-      case ForecastEvent.getNewForecast:
+      case ForecastEvent.getNewForecastFromAPI:
         _busy();
         yield ForecastState.onGet(_prevState());
         try {

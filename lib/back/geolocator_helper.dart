@@ -1,20 +1,5 @@
 import 'package:geolocator/geolocator.dart';
 
-// Future<Position> getCurrentLocation() async {
-//   var result;
-//   try {
-//     print('get location');
-//     result = await Geolocator.getCurrentPosition(
-//         desiredAccuracy: LocationAccuracy.lowest,
-//         timeLimit: Duration(seconds: 20),
-//         forceAndroidLocationManager: false);
-//   } catch (e) {
-//     print(e);
-//     return Future.error('Failed to get current location');
-//   }
-//   return result;
-// }
-
 Future<Position> geolocatorRoutine() async {
   // firstly check permissions
   try {
@@ -36,17 +21,10 @@ Future<Position> geolocatorRoutine() async {
 
 Future<Position> getCurrentLocationBrute() async {
   var result;
-  var accuracies = [
-    LocationAccuracy.best,
-    LocationAccuracy.high,
-    LocationAccuracy.medium,
-    LocationAccuracy.low,
-    LocationAccuracy.lowest,
-  ];
 
-  for (var accuracy in accuracies) {
+  for (var accuracy in LocationAccuracy.values.reversed) {
     try {
-      print('brute get location');
+      print('brute get location: $accuracy');
       result = await Geolocator.getCurrentPosition(
           desiredAccuracy: accuracy,
           timeLimit: Duration(seconds: 5),
@@ -81,7 +59,7 @@ Future<void> checkAccessability() async {
     if (permission != LocationPermission.whileInUse &&
         permission != LocationPermission.always) {
       return Future.error(
-          'Location permissions are denied (actual value: $permission).');
+          'Location permissions are denied.');
     }
   }
   print('Location permissions are ok');

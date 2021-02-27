@@ -5,14 +5,13 @@ abstract class WeatherAPI {
 }
 
 class Weather {
-  Weather(
-      {this.humidity,
-      this.temp,
-      this.pressure,
-      this.weatherDescription,
-      this.datetime,
-      this.city});
-  
+  Weather({this.humidity,
+    this.temp,
+    this.pressure,
+    this.weatherDescription,
+    this.datetime,
+    this.city});
+
   Weather.copyOf(Weather weather) {
     datetime = weather.datetime;
     temp = weather.temp;
@@ -24,30 +23,31 @@ class Weather {
 
   Weather.fromAPI(Map<String, dynamic> map, String city) {
     datetime = DateTime.parse(map['dt_txt'].toString());
-    temp = _doubleParser(map['main']['temp']);
-    pressure = _doubleParser(map['main']['pressure']);
-    humidity = _doubleParser(map['main']['humidity']);
+    temp = _doubleParser(map['main']['temp']).round();
+    pressure = _doubleParser(map['main']['pressure']).round();
+    humidity = _doubleParser(map['main']['humidity']).round();
     weatherDescription = WeatherDescription.fromMap(map['weather'][0]);
     this.city = city;
   }
-  DateTime datetime;
-  double temp;
-  double pressure;
-  double humidity;
-  WeatherDescription weatherDescription;
 
+  Weather.fromDB(Map<String, dynamic> map) {
+    datetime = DateTime.parse(map['dt_txt'].toString());
+    temp = int.tryParse(map['temp']);
+    pressure = int.tryParse(map['pressure']);
+    humidity = int.tryParse(map['humidity']);
+    weatherDescription = WeatherDescription.fromDB(map['description']);
+    city = map['city'];
+  }
+
+  DateTime datetime;
+  int temp;
+  int pressure;
+  int humidity;
+  WeatherDescription weatherDescription;
   String city;
 
-  int get temperature => (temp-273).round();
-  @override
-  // String toString() =>
-  //     'Weather: ' +
-  //     datetime.toLocal().toString() +
-  //     ' pressure: $pressure' +
-  //     ' temp: $temp' +
-  //     ' humidity: $humidity' +
-  //     ' city: $city' +
-  //     ' weather_desc: $weatherDescription';
+  int get temperature => (temp - 273).round();
+
   //TODO
   String toPrettyString() =>
       'Weather: ' +
@@ -57,6 +57,16 @@ class Weather {
           ' humidity: $humidity' +
           ' city: $city' +
           ' weather_desc: $weatherDescription';
+
+  List<dynamic> toDB() =>
+      [
+        datetime.toString(),
+        temp,
+        pressure,
+        humidity,
+        weatherDescription.toDB(),
+        city
+      ];
 }
 
 class WeatherDescription {
@@ -65,6 +75,14 @@ class WeatherDescription {
     description = map['description'];
     iconName = map['icon'];
   }
+
+  WeatherDescription.fromDB(String string) {
+    var values = string.split(',');
+    main = values[0].substring(values[0].indexOf(' ') + 1);
+    description = values[1].substring(values[1].indexOf(' ') + 1);
+    iconName = values[2].substring(values[2].indexOf(' ') + 1);
+  }
+
   String main;
   String description;
   String iconName;
@@ -72,6 +90,8 @@ class WeatherDescription {
   @override
   String toString() =>
       'Weather description: main: $main, description: $description, icon: $iconName';
+
+  String toDB() => 'main: $main, description: $description, icon: $iconName';
 }
 
 double _doubleParser(dynamic value) => double.tryParse(value.toString());
