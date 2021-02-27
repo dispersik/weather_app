@@ -4,7 +4,7 @@ import 'package:share/share.dart';
 import 'package:weather_app/back/entities/weather.dart';
 import 'package:weather_app/back/entities/weather_state.dart';
 import 'package:weather_app/pages/forecast_page.dart';
-import 'package:weather_app/widgets/weather_widget.dart';
+import 'package:weather_app/widgets/weather/weather_widget.dart';
 
 class WeatherView extends StatelessWidget {
   const WeatherView(this.weather);

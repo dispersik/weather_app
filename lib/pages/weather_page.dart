@@ -12,10 +12,10 @@ import 'package:weather_app/back/entities/weather_state.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/entities/weather.dart';
 import 'package:weather_app/widgets/ui_helper.dart';
-import 'package:weather_app/widgets/weather_err.dart';
-import 'package:weather_app/widgets/weather_loading.dart';
-import 'package:weather_app/widgets/weather_view.dart';
-import 'package:weather_app/widgets/weather_widget.dart';
+import 'package:weather_app/widgets/weather/weather_err.dart';
+import 'package:weather_app/widgets/weather/weather_loading.dart';
+import 'package:weather_app/widgets/weather/weather_view.dart';
+import 'package:weather_app/widgets/weather/weather_widget.dart';
 import 'forecast_page.dart';
 
 class WeatherPage extends StatelessWidget {

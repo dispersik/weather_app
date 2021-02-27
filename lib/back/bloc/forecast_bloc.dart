@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/entities/forecast_state.dart';
 import 'package:weather_app/back/repository/repository_core.dart';
+import 'package:weather_app/back/repository/repository_singleton.dart';
 import 'package:weather_app/back/repository/weather_repository.dart';
 import 'package:weather_app/back/entities/weather.dart';
 

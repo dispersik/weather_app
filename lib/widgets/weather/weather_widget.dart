@@ -7,20 +7,6 @@ import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/entities/weather.dart';
 
 class WeatherWidget extends StatelessWidget {
-  Future<void> _getForecastRoutine() async {
-    final weatherAPI = OpenWeatherMapAPI();
-    final currentLocation = /*await getCurrentLocation() ??*/
-        Position(
-            // latitude: 52.42536875588388,
-            // longitude: 31.021136747104755
-            latitude: 52.35308471250674,
-            longitude: 31.106725359980484);
-    print(currentLocation);
-    final weatherList =
-        await weatherAPI.getForecastByCoordinates(currentLocation);
-    print(weatherList);
-  }
-
   const WeatherWidget({this.weather});
 
   final Weather weather;

@@ -1,10 +1,18 @@
 import 'package:weather_app/back/entities/forecast.dart';
+import 'package:weather_app/back/entities/weather.dart';
 import 'package:weather_app/back/geolocator_helper.dart';
 import 'package:weather_app/back/repository/openweathermap_api.dart';
 import 'package:weather_app/back/repository/repository_core.dart';
 import 'package:weather_app/back/repository/repository_local.dart';
 
 class WeatherRepository extends Repository {
+  WeatherRepository._();
+
+  factory WeatherRepository() {
+    return _repository;
+  }
+
+  static final WeatherRepository _repository = WeatherRepository._();
   final localRep = LocalRepository();
   final api = OpenWeatherMapAPI();
 
