@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:weather_app/back/bloc/scheduler_bloc.dart';
-import 'package:weather_app/back/forecast.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/weather.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_app/pages/weather_page.dart';
 
 import 'back/bloc/bloc_core.dart';
 import 'back/bloc/forecast_bloc.dart';
 import 'back/bloc/weather_bloc.dart';
-import 'back/forecast_state.dart';
-
-List<Weather> forecast = List<Weather>();
+import 'back/entities/forecast_state.dart';
 
 void main() {
   Bloc.observer = SimpleBlocObserver();
@@ -34,15 +30,52 @@ class _AppState extends State<App> {
       ],
       child: BlocListener<ForecastBloc, ForecastState>(
         listener: (context, state) {
-          // print('forecast new state: ${state.forecast[0]}');
-          // TODO match timestamp after updating
-          if (state.forecast != null)
-            context.read<WeatherBloc>().add(WeatherEvent.setCurrentWeather);
-          if (state.haveError) Fluttertoast.showToast(
-              msg: state.error,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1);
+          if (state != null) {
+            print('main switch');
+            switch (state.state) {
+              case ForecastStates.error:
+                Fluttertoast.showToast(
+                    msg: state.error,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1);
+                context
+                    .read<WeatherBloc>()
+                    .add(WeatherEvent(type: WeatherEventType.error));
+                break;
+
+              case ForecastStates.gettingValue:
+                context
+                    .read<WeatherBloc>()
+                    .add(WeatherEvent(type: WeatherEventType.waitForWeather));
+                break;
+
+              default:
+                context.read<WeatherBloc>().add(WeatherEvent(
+                    type: WeatherEventType.setWeather,
+                    value: (state.forecast != null) ? state.forecast[0] : null));
+            }
+            if (state.haveError) {
+              Fluttertoast.showToast(
+                  msg: state.error,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1);
+              context
+                  .read<WeatherBloc>()
+                  .add(WeatherEvent(type: WeatherEventType.error));
+            }
+            if (state.gettingValue) {
+              context
+                  .read<WeatherBloc>()
+                  .add(WeatherEvent(type: WeatherEventType.waitForWeather));
+            }
+            if (!state.haveError && !state.gettingValue) {
+              context.read<WeatherBloc>().add(WeatherEvent(
+                  type: WeatherEventType.setWeather,
+                  value: (state.forecast != null) ? state.forecast[0] : null));
+            }
+          }
         },
         child: MaterialApp(home: WeatherPage()),
       ),

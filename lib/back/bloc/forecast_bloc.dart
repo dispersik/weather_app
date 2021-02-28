@@ -1,70 +1,51 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/back/forecast.dart';
-import 'package:weather_app/back/forecast_state.dart';
-import 'package:weather_app/back/weather.dart';
+import 'package:weather_app/back/entities/forecast.dart';
+import 'package:weather_app/back/entities/forecast_state.dart';
+import 'package:weather_app/back/repository/weather_repository.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
-import '../../main.dart';
-import '../geolocator_helper.dart';
-import '../openweathermap_api.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-enum ForecastEvent { getNewForecast, validateExpireState, getCurrentForecast }
+enum ForecastEvent {
+  getForecast,
+  getNewForecastFromAPI,
+}
 
 class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   ForecastBloc() : super(null);
-  final _api = OpenWeatherMapAPI();
 
-  bool busy = false;
-  void _busy() => busy = true;
-  void _notBusy() => busy = false;
+  final repository = WeatherRepository();
 
   @override
   Stream<ForecastState> mapEventToState(ForecastEvent event) async* {
-    _busy();
+    var forecast;
     switch (event) {
-      // case ForecastEvent.getCurrentForecast:
-      //   yield state;
-      //   break;
-      // case ForecastEvent.validateExpireState:
-      //   throw UnimplementedError();
-      //   break;
-      case ForecastEvent.getNewForecast:
-        // firstly check permissions
+      case ForecastEvent.getForecast:
+        yield ForecastState.onGet(_prevState());
         try {
-          await checkAccessability();
+          forecast = await repository.getForecast();
         } catch (e) {
-          _notBusy();
+          print(e);
           yield ForecastState.onError(_prevState(), error: e.toString());
           break;
         }
-        // if ok, trying to obtain current position
-        var position;
-        try {
-          position = await getCurrentLocationBrute();
-        } catch (e) {
-          print('error in bloc: $e');
-          _notBusy();
-          yield ForecastState.onError(_prevState(), error: e.toString());
-          break;
-        }
-        // getting forecast from the api
-        try {
-          forecast = await _api.getForecastByCoordinates(position);
-        } catch (e) {
-          print('error in bloc: $e');
-          _notBusy();
-          yield ForecastState.onError(_prevState(),
-              error: 'No Internet access');
-          break;
-        }
-        _notBusy();
-        yield ForecastState(forecast);
+        yield ForecastState(forecast.forecast);
         break;
+
+      case ForecastEvent.getNewForecastFromAPI:
+        yield ForecastState.onGet(_prevState());
+        try {
+          forecast = await repository.fromAPI();
+        } catch (e) {
+          print('err: $e');
+          yield ForecastState.onError(_prevState(), error: e.toString());
+          break;
+        }
+        repository.localRep.updateForecast(forecast);
+        yield ForecastState(forecast.forecast);
+        break;
+
       default:
-        _notBusy();
         addError(Exception('unsupported event'));
         yield null;
     }

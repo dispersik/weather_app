@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:weather_app/back/entities/weather.dart';
 
 class SizeConfig {
   static MediaQueryData _mediaQueryData;
@@ -24,4 +26,11 @@ class SizeConfig {
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal)/100;
     safeBlockVertical = (screenHeight - _safeAreaVertical)/100;
   }
+}
+
+Color iconColorPicker(Weather weather) {
+  return (!(weather.weatherDescription.iconName.indexOf('n') != -1 ||
+      weather.weatherDescription.iconName.indexOf('13') != -1))
+      ? Colors.yellow[800]
+      : Colors.black26;
 }
