@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:weather_app/back/entities/forecast.dart';
 
 enum ForecastStates {
-  gettingValue, error, update
+  gettingValue, error
 }
 
 class ForecastState extends Forecast {
@@ -13,9 +13,7 @@ class ForecastState extends Forecast {
   }
 
   // used when there's no error
-  ForecastState(forecast) : super(forecast) {
-    // state = ForecastStates.get;
-  }
+  ForecastState(forecast) : super(forecast);
 
   // on error
   ForecastState.onError(forecast, {@required this.error})

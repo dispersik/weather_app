@@ -1,31 +1,15 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:share/share.dart';
 import 'package:weather_app/back/bloc/forecast_bloc.dart';
 import 'package:weather_app/back/bloc/weather_bloc.dart';
+import 'package:weather_app/back/entities/forecast_state.dart';
 import 'package:weather_app/back/entities/weather_state.dart';
-import 'package:weather_app/back/repository/openweathermap_api.dart';
-import 'package:weather_app/back/entities/weather.dart';
-import 'package:weather_app/widgets/ui_helper.dart';
 import 'package:weather_app/widgets/weather/weather_err.dart';
 import 'package:weather_app/widgets/weather/weather_loading.dart';
 import 'package:weather_app/widgets/weather/weather_view.dart';
-import 'package:weather_app/widgets/weather/weather_widget.dart';
-import 'forecast_page.dart';
 
 class WeatherPage extends StatelessWidget {
-  // Future<void> _shareWeather(BuildContext context, Weather weather) async {
-  //   final RenderBox box = context.findRenderObject();
-  //   await Share.share(weather.toString(),
-  //       subject: 'Weather',
-  //       sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +29,7 @@ class WeatherPage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                context.read<ForecastBloc>().add(ForecastEvent.getNewForecastFromAPI);
+                context.read<ForecastBloc>().add(ForecastEvent.getForecast);
               },
               color: Colors.black54,
             ),
@@ -56,9 +40,10 @@ class WeatherPage extends StatelessWidget {
       ),
       body: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, weather) {
-          if (weather == null && !context.read<ForecastBloc>().busy)
-            context.read<ForecastBloc>().add(ForecastEvent.getNewForecastFromAPI);
-          print('\n\n\nweather page building\n\n\n');
+          if (weather == null && (context.read<ForecastBloc>().state == null ||
+              context.read<ForecastBloc>().state.state !=
+                  ForecastStates.gettingValue))
+            context.read<ForecastBloc>().add(ForecastEvent.getForecast);
           return SizedBox.expand(
               child: Column(children: [
             Container(
@@ -70,78 +55,7 @@ class WeatherPage extends StatelessWidget {
                   ? WeatherView(weather)
                   : (weather != null && weather.state == WeatherStates.err)
                       ? WeatherErr(weather)
-                      : WeatherLoading()
-              /*(weather != null)
-                  ? */
-              /*ListView(physics: BouncingScrollPhysics(), children: [
-                      Column(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            WeatherWidget(weather: weather),
-                            SizedBox(
-                              height: 70,
-                            ),
-                            GestureDetector(
-                              child: Text(
-                                'Forecast for 5 days',
-                                style: _forecastButtonStyle,
-                              ),
-                              onTap: () => Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ForecastPage())),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                            GestureDetector(
-                              child: Text(
-                                'Share',
-                                style: _shareButtonStyle,
-                              ),
-                              onTap: () async =>
-                                  await _shareWeather(context, weather),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            )
-                          ])
-                    ])*/
-              // :
-
-              /*Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: (context.read<ForecastBloc>().state != null &&
-                              context.read<ForecastBloc>().state.haveError &&
-                              !context.read<ForecastBloc>().state.gettingValue)
-                          ? [
-                              Text('Cannot obtain forecast'),
-                              ElevatedButton(
-                                  onPressed: () => context
-                                      .read<ForecastBloc>()
-                                      .add(ForecastEvent.getNewForecast),
-                                  child: Text('try again'))
-                            ]
-                          : [
-                              SizedBox(
-                                  height: 100,
-                                  width: 100,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 10,
-                                  )),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                'initializing',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300, fontSize: 20),
-                              ),
-                            ])*/
-              ,
+                      : WeatherLoading(),
             ),
           ]));
         },
@@ -149,11 +63,3 @@ class WeatherPage extends StatelessWidget {
     );
   }
 }
-
-/*
-final _shareButtonStyle =
-    TextStyle(fontSize: 30, color: Colors.orange, fontWeight: FontWeight.w300);
-
-final _forecastButtonStyle =
-    TextStyle(fontSize: 25, color: Colors.black87, fontWeight: FontWeight.w300);
-*/

@@ -2,7 +2,10 @@ import 'package:sqflite/sqflite.dart';
 import 'dart:io' as io;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 import 'dart:async';
+
+import 'package:weather_app/back/entities/weather.dart';
 
 class ForecastDB {
   static Database _db;
@@ -26,11 +29,12 @@ class ForecastDB {
   }
 
   Future<Forecast> getForecast() async {
-    dbClient = await db;
+    var dbClient = await db;
     List<Map> list;
     await dbClient.transaction((txn) async {
       list = await txn.rawQuery('SELECT * FROM Forecast;');
     });
+    if (list.isEmpty) return null;
     var forecast = List<Weather>();
     list.forEach((weather) {
       forecast.add(Weather.fromDB(weather));
@@ -39,19 +43,21 @@ class ForecastDB {
   }
 
   Future<void> deleteForecast() async {
-    dbClient = await db;
+    var dbClient = await db;
+    print('db delete');
     await dbClient.transaction((txn) async {
       txn.rawQuery('DELETE FROM Forecast;');
-    })
+    });
   }
 
   Future<void> insertForecast(Forecast forecast) async {
-    dbClient = await db;
+    var dbClient = await db;
     await dbClient.transaction((txn) async {
-      forecast.forEach((weather) async {
+      forecast.forecast.forEach((weather) async {
         await txn.rawInsert('INSERT INTO Forecast(dt_txt, temp, pressure, humidity, description, city) VALUES(?,?,?,?,?,?);',
         weather.toDB());
       });
     });
+    print('db insert');
   }
 }

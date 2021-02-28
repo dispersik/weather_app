@@ -32,9 +32,9 @@ class Weather {
 
   Weather.fromDB(Map<String, dynamic> map) {
     datetime = DateTime.parse(map['dt_txt'].toString());
-    temp = int.tryParse(map['temp']);
-    pressure = int.tryParse(map['pressure']);
-    humidity = int.tryParse(map['humidity']);
+    temp = map['temp'];
+    pressure = map['pressure'];
+    humidity = map['humidity'];
     weatherDescription = WeatherDescription.fromDB(map['description']);
     city = map['city'];
   }
@@ -50,10 +50,10 @@ class Weather {
 
   //TODO
   String toPrettyString() =>
-      'Weather: ' +
+      'Weather in $city at ' +
           datetime.toLocal().toString() +
           ' pressure: $pressure' +
-          ' temp: $temp' +
+          ' temperature: $temp' +
           ' humidity: $humidity' +
           ' city: $city' +
           ' weather_desc: $weatherDescription';
@@ -79,8 +79,8 @@ class WeatherDescription {
   WeatherDescription.fromDB(String string) {
     var values = string.split(',');
     main = values[0].substring(values[0].indexOf(' ') + 1);
-    description = values[1].substring(values[1].indexOf(' ') + 1);
-    iconName = values[2].substring(values[2].indexOf(' ') + 1);
+    description = values[1].substring(values[1].indexOf(' ', 1) + 1);
+    iconName = values[2].substring(values[2].indexOf(' ', 1) + 1);
   }
 
   String main;

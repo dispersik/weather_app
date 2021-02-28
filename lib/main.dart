@@ -10,8 +10,6 @@ import 'back/bloc/forecast_bloc.dart';
 import 'back/bloc/weather_bloc.dart';
 import 'back/entities/forecast_state.dart';
 
-List<Weather> forecast = List<Weather>();
-
 void main() {
   Bloc.observer = SimpleBlocObserver();
   runApp(App());
@@ -33,6 +31,30 @@ class _AppState extends State<App> {
       child: BlocListener<ForecastBloc, ForecastState>(
         listener: (context, state) {
           if (state != null) {
+            print('main switch');
+            switch (state.state) {
+              case ForecastStates.error:
+                Fluttertoast.showToast(
+                    msg: state.error,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1);
+                context
+                    .read<WeatherBloc>()
+                    .add(WeatherEvent(type: WeatherEventType.error));
+                break;
+
+              case ForecastStates.gettingValue:
+                context
+                    .read<WeatherBloc>()
+                    .add(WeatherEvent(type: WeatherEventType.waitForWeather));
+                break;
+
+              default:
+                context.read<WeatherBloc>().add(WeatherEvent(
+                    type: WeatherEventType.setWeather,
+                    value: (state.forecast != null) ? state.forecast[0] : null));
+            }
             if (state.haveError) {
               Fluttertoast.showToast(
                   msg: state.error,
@@ -53,14 +75,7 @@ class _AppState extends State<App> {
                   type: WeatherEventType.setWeather,
                   value: (state.forecast != null) ? state.forecast[0] : null));
             }
-          } else {}
-          // print('forecast new state: ${state.forecast[0]}');
-          // TODO match timestamp after updating
-          // if (state.forecast != null)
-
-          // context.read<WeatherBloc>().add(WeatherEvent(
-          //     type: WeatherEventType.setWeather,
-          //     value: (state.forecast != null) ? state.forecast[0] : null));
+          }
         },
         child: MaterialApp(home: WeatherPage()),
       ),

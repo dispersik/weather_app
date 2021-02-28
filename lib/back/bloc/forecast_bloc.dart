@@ -1,59 +1,51 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/back/entities/forecast.dart';
 import 'package:weather_app/back/entities/forecast_state.dart';
 import 'package:weather_app/back/repository/weather_repository.dart';
 import 'package:weather_app/back/entities/weather.dart';
 
 enum ForecastEvent {
-  getAnyForecast,
+  getForecast,
   getNewForecastFromAPI,
-  validateExpireState,
-  getCurrentForecast
 }
 
 class ForecastBloc extends Bloc<ForecastEvent, ForecastState> {
   ForecastBloc() : super(null);
 
-  final _repository = WeatherRepository();
-
-  bool busy = false;
-  void _busy() => busy = true;
-  void _notBusy() => busy = false;
+  final repository = WeatherRepository();
 
   @override
   Stream<ForecastState> mapEventToState(ForecastEvent event) async* {
     var forecast;
-    _busy();
     switch (event) {
-      case ForecastEvent.getAnyForecast:
-        try {
-          forecast = await _repository.getForecast();
-        } catch (e) {
-          print(e);
-          _notBusy();
-          yield ForecastState.onError(_prevState(), error: e.toString());
-          break;
-        }
-        _notBusy();
-        yield ForecastState(forecast);
-        break;
-      case ForecastEvent.getNewForecastFromAPI:
-        _busy();
+      case ForecastEvent.getForecast:
         yield ForecastState.onGet(_prevState());
         try {
-          forecast = await _repository.fromAPI();
+          forecast = await repository.getForecast();
         } catch (e) {
-          print('err: $e');
-          _notBusy();
+          print(e);
           yield ForecastState.onError(_prevState(), error: e.toString());
           break;
         }
-        _notBusy();
         yield ForecastState(forecast.forecast);
         break;
+
+      case ForecastEvent.getNewForecastFromAPI:
+        yield ForecastState.onGet(_prevState());
+        try {
+          forecast = await repository.fromAPI();
+        } catch (e) {
+          print('err: $e');
+          yield ForecastState.onError(_prevState(), error: e.toString());
+          break;
+        }
+        repository.localRep.updateForecast(forecast);
+        yield ForecastState(forecast.forecast);
+        break;
+
       default:
-        _notBusy();
         addError(Exception('unsupported event'));
         yield null;
     }

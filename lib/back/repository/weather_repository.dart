@@ -18,16 +18,24 @@ class WeatherRepository extends Repository {
 
   @override
   Future<Forecast> getForecast() async {
-    // TODO change logic to try/catch
-    var forecast = await fromAPI();
+    var apiErr;
+    var forecast;
+    try {
+      forecast = await fromAPI();
+    } catch (e) {
+      print(e);
+      apiErr = e;
+    }
     if (forecast == null) {
       try {
         forecast = await localRep.getForecast();
       } catch (e) {
-        print(e);
+        print('db error: $e');
       }
+    } else {
+      localRep.updateForecast(forecast);
     }
-    return forecast;
+    return forecast ?? Future.error(apiErr);
   }
 
   Future<Forecast> fromAPI() async {
@@ -57,7 +65,7 @@ class WeatherRepository extends Repository {
   Future<void> saveForecast(Forecast forecast) {
     try {
       localRep.saveForecast(forecast);
-    } catch(e) {
+    } catch (e) {
       print(e);
       return Future.error('Local weather save failed');
     }

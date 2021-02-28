@@ -58,7 +58,7 @@ class WeatherView extends StatelessWidget {
 
   Future<void> _shareWeather(BuildContext context, Weather weather) async {
     final RenderBox box = context.findRenderObject();
-    await Share.share(weather.toString(),
+    await Share.share(weather.toPrettyString(),
         subject: 'Weather',
         sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
